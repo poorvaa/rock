@@ -10,7 +10,7 @@ http://www.springframework.org/schema/context/spring-context.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 	<!-- package discovery and their annotations are read -->
-	 <context:component-scan base-package="hibernate" /> 
+	 <context:component-scan base-package="rock" /> 
 	 
 	 <bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

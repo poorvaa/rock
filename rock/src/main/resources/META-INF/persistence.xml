@@ -5,6 +5,5 @@
   http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   
   <persistence-unit name="testPU">
-  <class>hibernate.dao.impl.UserDaoImpl</class>
   </persistence-unit>
   </persistence>
