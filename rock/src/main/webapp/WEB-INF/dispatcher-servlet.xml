@@ -2,15 +2,19 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 	<!-- package discovery and their annotations are read -->
-	 <context:component-scan base-package="rock" /> 
+	 <context:component-scan base-package="rock.*" /> 
+	 <mvc:annotation-driven />
 	 
 	 <bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -30,8 +34,48 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 	 </bean>
 	 
 	 
-	 <!-- JPA entity manager factory -->
-	<bean id="entityManagerFactory"
+	 
+         
+     
+     <!-- Hibernate session factory -->
+<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+     <property name ="dataSource" ref = "dataSource"></property>
+     <property name="configLocation">
+     <value>classpath:hibernate.cfg.xml</value>
+     </property>
+	<property name="hibernateProperties">
+     <props>
+     <prop key ="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+     <prop key ="hibernate.show_sql">true</prop>
+     <prop key ="hibernate.hbm2ddl.auto">update</prop>
+     </props>
+     </property>
+     </bean>
+     
+     
+     <tx:annotation-driven transaction-manager="transactionManager"/>
+	<bean id="transactionManager"
+	class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+	<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	 
+	 
+
+	 <!-- Configured view -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	
+     
+     
+     <!-- JPA entity manager factory -->
+	<!-- <bean id="entityManagerFactory"
      class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
      <property name="persistenceUnitName" value="testPU"></property>
      <property name ="dataSource" ref = "dataSource"></property>
@@ -45,22 +89,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
      <prop key ="hibernate.show_sql">true</prop>
      </props>
      </property>
-     </bean>
+     </bean> -->
      
-     <tx:annotation-driven transaction-manager="transactionManager" />
+     
+    <!--  <tx:annotation-driven transaction-manager="transactionManager" />
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
             <property name="entityManagerFactory" ref="entityManagerFactory" />
-        </bean>
+        </bean> -->
 	 
 	 
-
-	<!-- Configured view -->
-	<bean		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix">
-			<value>/WEB-INF/views/</value>
-		</property>
-		<property name="suffix">
-			<value>.jsp</value>
-		</property>
-	</bean>
+	 
 </beans>

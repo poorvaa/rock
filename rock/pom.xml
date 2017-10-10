@@ -11,6 +11,8 @@
   <properties>
 		<spring.version>4.2.1.RELEASE</spring.version>
 		<hibernate.version>4.3.11.Final</hibernate.version>
+		<compiler.version>1.7</compiler.version>
+		<jackson.databind-version>2.2.3</jackson.databind-version>
 	</properties>
   
   <dependencies>
@@ -50,11 +52,11 @@
 	      <version>${hibernate.version}</version>
     	</dependency>
     	
-     <dependency>
+     <!-- <dependency>
 	    <groupId>org.hibernate</groupId>
 	    <artifactId>hibernate-entitymanager</artifactId>
 	    <version>${hibernate.version}</version>
-  	 </dependency>
+  	 </dependency> -->
   	 
   	 <!--End Hibernate Dependencies  -->
   	 
@@ -64,6 +66,20 @@
 		<artifactId>mysql-connector-java</artifactId>
 		<version>5.1.9</version>
 	</dependency>
+	
+	<!-- Jackson -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.databind-version}</version>
+		</dependency>
+		
+		<!-- <dependency>
+    <groupId>org.codehaus.jackson</groupId>
+    <artifactId>jackson-mapper-asl</artifactId>
+    <version>1.9.13</version>
+</dependency> -->
+		
   
   
   		<!-- For Junit Integration  -->
@@ -121,6 +137,16 @@
     
   </dependencies>
   <build>
+  
+  <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${compiler.version}</source>
+                    <target>${compiler.version}</target>
+                </configuration>
+            </plugin>    
+        </plugins>
     <finalName>rock</finalName>
   </build>
 </project>
