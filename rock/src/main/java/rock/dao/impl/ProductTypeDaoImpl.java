@@ -1,5 +1,6 @@
 package rock.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -46,6 +47,9 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 		
 	}
 
+	
+	
+	
 	@Override
 	public List<ProductType> listAllProductType() {
 		
@@ -85,8 +89,8 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 		
 		ProductType oldPt = (ProductType)getSession().get(ProductType.class, prodTypeId);
 		oldPt.setProdTypeName(pt.getProdTypeName());
-		//oldPt.setProdTypeName("New!!");
 		oldPt.setActive(true);
+		oldPt.setModifiedOn(new Date());
 		//getSession().update(oldPt);
 		return 1;
 		

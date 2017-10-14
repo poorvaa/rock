@@ -1,5 +1,6 @@
 package rock.service.impl;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -38,9 +39,12 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
 	@Override
 	@Transactional
-	public List<ProductType> listAllProductType() {
+	public List<ProductType> listAllProductType() throws ParseException {
 		
-		return ptDao.listAllProductType();
+		List<ProductType> prodTypeList =  ptDao.listAllProductType();
+		
+		
+		return prodTypeList;
 	}
 	
 	

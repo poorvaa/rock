@@ -1,5 +1,6 @@
 package rock.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import rock.db.model.ProductType;
@@ -11,7 +12,7 @@ public interface ProductTypeService {
 		public int addProductType(ProductType pt);
 		
 		//to view all product type
-		public List<ProductType> listAllProductType();
+		public List<ProductType> listAllProductType() throws ParseException;
 		
 		public ProductType listProductType(int id);
 		

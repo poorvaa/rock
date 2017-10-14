@@ -1,5 +1,6 @@
 package rock.db.model;
 
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -7,6 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import rock.JsonDateSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 public class ProductType {
@@ -36,6 +41,8 @@ public class ProductType {
 	@Column(name="modified_on")
 	private Date modifiedOn;
 	
+	
+	
 	@Column(name="is_active")
 	private boolean isActive;
 
@@ -47,20 +54,9 @@ public class ProductType {
 	}
 
 
-
-	public ProductType(int prodTypeId, String prodTypeName, String prodTypeImg,
-			String prodTypeDesc, int rank, Date createdOn, Date modifiedOn,
-			boolean isActive) {
-		super();
-		this.prodTypeId = prodTypeId;
-		this.prodTypeName = prodTypeName;
-		this.prodTypeImg = prodTypeImg;
-		this.prodTypeDesc = prodTypeDesc;
-		this.rank = rank;
-		this.createdOn = createdOn;
-		this.modifiedOn = modifiedOn;
-		this.isActive = isActive;
-	}
+	
+	
+	
 
 
 	
@@ -123,13 +119,13 @@ public class ProductType {
 	}
 
 
-
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getCreatedOn() {
 		return createdOn;
 	}
 
 
-
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getModifiedOn() {
 		return modifiedOn;
 	}

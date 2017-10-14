@@ -1,5 +1,6 @@
 package rock.controller;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +43,10 @@ public class ProductTypeController {
 		
 	}
 	
-	
+	//to view all products
 	@RequestMapping(method= RequestMethod.GET,produces="application/json")
 	@ResponseBody
-	public List<ProductType> viewAllProducts()
+	public List<ProductType> viewAllProducts() throws ParseException
 	{
 		List<ProductType> pt = pts.listAllProductType();
 		/*if(pt.size()>0)
@@ -72,7 +73,7 @@ public class ProductTypeController {
 	@ResponseBody
 	public String updateProdType(@PathVariable int prodTypeId, @RequestBody ProductType pt)
 	{
-		//pt.setProdTypeId(prodTypeId);
+		
 		pts.updateProductType(prodTypeId,pt);
 		return "done!!!!";
 	}
