@@ -39,7 +39,7 @@ public class ProductTypeController {
 		if(ptb.getRank()==0)
 		{
 			Error error = new Error(400,"rank can not be null");
-			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
 		}
 		
 		if(ptb.getProdTypeName()==null)
@@ -64,8 +64,8 @@ public class ProductTypeController {
 			return responseEntity;
 		}
 		
-		Error error = new Error(404,"Rank already exists, enter different one");
-		return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+		Error error = new Error(500,"Rank already exists, enter different one");
+		return new ResponseEntity<Error>(error,HttpStatus.INTERNAL_SERVER_ERROR);
 		
 		
 	}
@@ -80,8 +80,8 @@ public class ProductTypeController {
 				return new ResponseEntity<List<ProductType>>(pt,HttpStatus.OK);
 			}
 			
-			Error error = new Error(404,"no products exist");
-			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+			Error error = new Error(204,"no products exist");
+			return new ResponseEntity<Error>(error,HttpStatus.NO_CONTENT);
 				
 		}
 	
@@ -93,8 +93,8 @@ public class ProductTypeController {
 		ProductType pt = pts.listProductType(prodTypeId);
 		if(pt == null)
 		{
-			Error error = new Error(404,"product type with id "+prodTypeId+" not found");
-			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+			Error error = new Error(204,"product type with id "+prodTypeId+" not found");
+			return new ResponseEntity<Error>(error,HttpStatus.NO_CONTENT);
 		}
 		
 		return new ResponseEntity<ProductType>(pt,HttpStatus.OK);
@@ -105,20 +105,39 @@ public class ProductTypeController {
 	
 	@RequestMapping(value="/{prodTypeId}",method=RequestMethod.PUT)
 	@ResponseBody
-	public String updateProdType(@PathVariable int prodTypeId, @RequestBody ProductType pt)
+	public ResponseEntity<?> updateProdType(@PathVariable int prodTypeId, @RequestBody ProductType pt)
 	{
 		
-		pts.updateProductType(prodTypeId,pt);
-		return "done!!!!";
+		int status = pts.updateProductType(prodTypeId,pt);
+		
+		if(status== -1)
+		{
+			Error error = new Error(404,"no product with product id "+prodTypeId);
+			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+		}
+		
+		if(status== 0)
+		{
+			Error error = new Error(500,"rank you have entered already exists");
+			return new ResponseEntity<Error>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<String>("updated",HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/remove/{prodTypeId}",method=RequestMethod.GET)
 	@ResponseBody
-	public String removeProductType(@PathVariable int prodTypeId)
+	public ResponseEntity<?> removeProductType(@PathVariable int prodTypeId)
 	{
-		pts.deleteProductType(prodTypeId);
+		int status = pts.deleteProductType(prodTypeId);
 		
-		return "done";
+		if(status== 0)
+		{
+			Error error = new Error(404,"no product with product id "+prodTypeId);
+			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<String>("Done",HttpStatus.OK);
 	}
 
 }

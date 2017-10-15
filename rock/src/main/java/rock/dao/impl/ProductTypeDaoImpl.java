@@ -95,20 +95,67 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 	public int updateProductType(int prodTypeId,ProductType pt) {
 		
 		ProductType oldPt = (ProductType)getSession().get(ProductType.class, prodTypeId);
-		oldPt.setProdTypeName(pt.getProdTypeName());
-		oldPt.setActive(true);
-		oldPt.setModifiedOn(new Date());
-		//getSession().update(oldPt);
-		return 1;
+		System.out.print(oldPt);
+		if(oldPt == null)
+		{
+			return -1;
+		}
+		
+		else
+		{
+			if(pt.getRank()!=0)
+			{
+				Criteria criteria = getSession().createCriteria(ProductType.class)
+						 .add(Restrictions.eq("rank", pt.getRank()));
+
+				ProductType prodCheckRank = (ProductType) criteria.uniqueResult();
+				
+				if(prodCheckRank!=null)
+				{
+					System.out.print("rank "+pt.getRank()+" already exists");
+					return 0;
+				}
+				
+				else
+				{	System.out.print(" changing rank to "+pt.getRank());
+					oldPt.setRank(pt.getRank());
+				}
+			}
+			
+			if(pt.getProdTypeDesc()!=null && !(pt.getProdTypeDesc().isEmpty()))
+			{
+				oldPt.setProdTypeDesc(pt.getProdTypeDesc());
+			}
+			
+			if(pt.getProdTypeImg()!=null && !(pt.getProdTypeImg().isEmpty()))
+			{
+				oldPt.setProdTypeImg(pt.getProdTypeImg());
+			}
+			
+			if(pt.getIsActive()==true)
+			{
+				oldPt.setIsActive(true);
+			}
+			
+			oldPt.setModifiedOn(new Date());
+			//getSession().update(oldPt);*/
+			return 1;
+			
+		}
 		
 	}
 
 	@Override
-	public void deleteProductType(int id) {
+	public int deleteProductType(int id) {
 		
 		ProductType pt = (ProductType)getSession().get(ProductType.class, id);
+		if(pt == null)
+		{
+			return 0;
+		}
 		pt.setModifiedOn(new Date());
-		pt.setActive(false);
+		pt.setIsActive(false);
+		return 1;
 
 
 		

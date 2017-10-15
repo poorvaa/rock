@@ -25,7 +25,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
 		pt.setCreatedOn(new Date());
 		pt.setModifiedOn(new Date());
-		pt.setActive(true);
+		pt.setIsActive(true);
 		ProductType prodType = ptDao.addProductType(pt);
 		
 		return prodType;
@@ -59,9 +59,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
 	@Override
 	@Transactional
-	public void deleteProductType(int id) {
+	public int deleteProductType(int id) {
 
-		ptDao.deleteProductType(id);
+		return ptDao.deleteProductType(id);
 		
 	}
 

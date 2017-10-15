@@ -20,6 +20,6 @@ public interface ProductTypeService {
 		public int updateProductType(int prodTypeId,ProductType pt);
 		
 		//to delete given product type
-		public void deleteProductType(int id);
+		public int deleteProductType(int id);
 
 }
