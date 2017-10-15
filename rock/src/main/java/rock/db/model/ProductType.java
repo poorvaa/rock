@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 import rock.JsonDateSerializer;
 
@@ -21,6 +22,8 @@ public class ProductType {
 	@Column(name="id")
 	private int prodTypeId;
 	
+	
+	@NotNull
 	@Column(name="prod_type_name")
 	private String prodTypeName;
 	
@@ -31,6 +34,7 @@ public class ProductType {
 	@Column(name="prod_type_desc")
 	private String prodTypeDesc;
 	
+	@NotNull
 	@Column(name="rank")
 	private int rank;
 	
@@ -54,13 +58,6 @@ public class ProductType {
 	}
 
 
-	
-	
-	
-
-
-	
-	
 
 	public ProductType(String prodTypeName, String prodTypeImg,
 			String prodTypeDesc, int rank, Date createdOn, Date modifiedOn,

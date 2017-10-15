@@ -27,7 +27,7 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
     }
 	
 	@Override
-	public int addProductType(ProductType pt) {
+	public ProductType addProductType(ProductType pt) {
 	
 		List prod = getSession().createCriteria(ProductType.class)
 				 				.add(Restrictions.eq("rank", pt.getRank()))
@@ -36,10 +36,17 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 		if(prod.size()==0)
 		{
 			getSession().persist(pt);
-			return 1;
+			//getSession().flush();
+			int prodId = pt.getProdTypeId();
+			System.out.println("id is :"+prodId);
+			Criteria criteria = getSession().createCriteria(ProductType.class)
+					 .add(Restrictions.eq("id", prodId));
+
+			ProductType prodType = (ProductType) criteria.uniqueResult();
+			return prodType;
 		}
 		
-		return 0;
+		return null;
 		
 		
 		
@@ -58,12 +65,12 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 										 .add(Restrictions.eq("isActive", true))
 										 .addOrder(Order.asc("rank"))
 										 .list();
-		if(prodTypes.size()>0)
-		{
-			return prodTypes;
-		}
 		
-		return null;
+		
+			return prodTypes;
+		
+		
+		
 		
 	}
 	
@@ -100,6 +107,7 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 	public void deleteProductType(int id) {
 		
 		ProductType pt = (ProductType)getSession().get(ProductType.class, id);
+		pt.setModifiedOn(new Date());
 		pt.setActive(false);
 
 

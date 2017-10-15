@@ -7,7 +7,7 @@ import rock.db.model.ProductType;
 public interface ProductTypeDao {
 	
 	//to add product type
-	public int addProductType(ProductType pt);
+	public ProductType addProductType(ProductType pt);
 	
 	//to view all product type
 	public List<ProductType> listAllProductType();

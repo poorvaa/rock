@@ -21,19 +21,14 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 	
 	@Override
 	@Transactional
-	public int addProductType(ProductType pt) {
+	public ProductType addProductType(ProductType pt) {
 
 		pt.setCreatedOn(new Date());
 		pt.setModifiedOn(new Date());
 		pt.setActive(true);
-		int status = ptDao.addProductType(pt);
+		ProductType prodType = ptDao.addProductType(pt);
 		
-		if(status == 0)
-		{
-			return 0;
-		}
-		
-		return 1;
+		return prodType;
 		
 	}
 
