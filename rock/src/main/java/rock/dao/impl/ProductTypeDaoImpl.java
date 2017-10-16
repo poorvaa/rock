@@ -37,6 +37,8 @@ public class ProductTypeDaoImpl implements ProductTypeDao {
 		{
 			getSession().persist(pt);
 			//getSession().flush();
+			
+			//get product type info to return details to user
 			int prodId = pt.getProdTypeId();
 			System.out.println("id is :"+prodId);
 			Criteria criteria = getSession().createCriteria(ProductType.class)

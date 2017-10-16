@@ -93,6 +93,7 @@ public class ProductTypeController {
 		ProductType pt = pts.listProductType(prodTypeId);
 		if(pt == null)
 		{
+			System.out.println("inside");
 			Error error = new Error(204,"product type with id "+prodTypeId+" not found");
 			return new ResponseEntity<Error>(error,HttpStatus.NO_CONTENT);
 		}
