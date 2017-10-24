@@ -9,8 +9,10 @@ public class Error {
 	
 	
 	public Error(int code, String message) {
+		
 		this.code = code;
 		this.message = message;
+		
 	}
 	
 	

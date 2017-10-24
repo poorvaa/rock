@@ -1,12 +1,18 @@
 package rock.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import rock.bean.CategoryDetailsBean;
 import rock.dao.CategoryDetailsDao;
 import rock.db.model.CategoryDetails;
 import rock.db.model.ProductType;
@@ -25,32 +31,43 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 	@Override
 	public CategoryDetails add(CategoryDetails cd) {
 
-		/*Criteria criteria = getSession().createCriteria(CategoryDetails.class)
-										.add(Restrictions.and(
-												Restrictions.eq("category",cd.getCategory()),
-												Restrictions.eq("prod_type_id", )
-												))*/
 		
-		/*Criteria accountCriteria = getCurrentSession().createCriteria(Account.class,"acc");
-		Criteria bookCriteria =  accountCriteria .createCriteria("book","b");
-		Criteria orgCriteria =  bookCriteria.createCriteria("organization","org");
-		orgCriteria.add(Restrictions.eq("name", "XYZ"));
-
-		ProjectionList properties = Projections.projectionList();
-		properties.add(Projections.property("name"));
-		properties.add(Projections.property("id"));
-
-		accountCriteria.setProjection(properties);
-		accountCriteria.list();*/
 		int prodId = cd.getProdTypeDetails().getProdTypeId();
 		
+		// find product with given id
 		Criteria cr = getSession().createCriteria(ProductType.class)
 								  .add(Restrictions.eq("id",prodId));
 		
 		ProductType pt = (ProductType) cr.uniqueResult();
-		cd.setProdTypeDetails(pt);
+		
+		if(pt == null)
+		{
+			cd.setState(1);
+			return cd;
+		}
+		else
+		{
+			cd.setProdTypeDetails(pt);
+		}
+		
+		//check if a row with category and product id already exists in db
+		Criteria cr2 = getSession().createCriteria(CategoryDetails.class)
+									.add(Restrictions.eq("prodTypeDetails.prodTypeId", prodId))
+									.add(Restrictions.eq("category", cd.getCategory()));
+		
+		CategoryDetails catDetails = (CategoryDetails) cr2.uniqueResult();
+		
+		if(catDetails!=null)
+		{
+			cd.setState(2);
+			return cd;
+		}
 	
-		getSession().persist(cd);
+		else
+		{
+			
+			getSession().persist(cd);
+		}
 		
 		
 		
@@ -68,32 +85,75 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 	@Override
 	public CategoryDetails listCategoryDetails(int id) {
 		
-		/*Criteria criteria = getSession().createCriteria(CategoryDetails.class)
-				 .add(Restrictions.eq("id", id));
-
-		CategoryDetails pt = (CategoryDetails) criteria.uniqueResult();*/
-		
 		CategoryDetails pt = (CategoryDetails) getSession().get(CategoryDetails.class, id);
 		
-		//CategoryDetails pt = (CategoryDetails) getSession().load(CategoryDetails.class, id);
 		
-	
-		
-		System.out.println("after query");
-		//Hibernate.initialize(pt.getProdTypeDetails());
-		//System.out.println("after initialise");
-		
-	   // boolean status = 	pt.getIsActive();
-
 		if(pt!=null)
 		{
-			System.out.println("inside if");
-		return pt;
-		
+			return pt;
 		}
-		System.out.println("outside id");
+		
 		return null;
 
+	}
+
+
+	@Override
+	public List<CategoryDetailsBean> viewCategoryAndProdTypeId() {
+		
+		Criteria criteria = getSession().createCriteria(CategoryDetails.class);
+		
+		ProjectionList properties = Projections.projectionList();
+		properties.add(Projections.property("category"), "category");
+		properties.add(Projections.property("prodTypeDetails.prodTypeId"), "prodId");
+		
+		criteria.setProjection(properties);
+		criteria.setResultTransformer(Transformers.aliasToBean(CategoryDetailsBean.class));
+		
+		
+		
+		List<CategoryDetailsBean> cd =  criteria.list();
+		
+		return cd;
+	}
+
+
+	@Override
+	public List<String> viewDistinctCategories() {
+		
+		Criteria criteria = getSession().createCriteria(CategoryDetails.class)
+										.setProjection(Projections.distinct(Projections.property("category")));
+
+		List categories = criteria.list();
+		
+		return categories;
+	}
+
+
+	@Override
+	public List<CategoryDetails> joinCategoryAndProductType() {
+
+		
+		Criteria criteria = getSession().createCriteria(CategoryDetails.class,"cd")
+										.createAlias("cd.prodTypeDetails", "prodTypeDetails");
+
+		ProjectionList properties = Projections.projectionList();
+		properties.add(Projections.property("cd.category"), "category");
+		properties.add(Projections.property("prodTypeDetails.prodTypeName"), "productType");
+		properties.add(Projections.property("cd.rank"), "rank");
+		
+		
+		criteria.setProjection(properties);
+		/*Criteria criteria = getSession().createCriteria(CategoryDetails.class);
+		criteria.setFetchMode("ProductType", FetchMode.JOIN);
+		//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		*/
+		
+		
+		List<CategoryDetails> cd = criteria.list();
+		
+		
+		return cd;
 	}
 
 }

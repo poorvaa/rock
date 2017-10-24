@@ -12,7 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import rock.JsonDateSerializer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 public class CategoryDetails {
@@ -40,15 +44,24 @@ public class CategoryDetails {
 	@Column(name="is_active")
 	private boolean isActive;
 	
+	@Transient
+	@JsonInclude
+	private String location;
+	
 	
 	@ManyToOne
 	@JoinColumn(name="prod_type_id")
 	private ProductType prodTypeDetails;
 	
 	
+	
+	
+	
+	/*1- if product if prod_id is not valid
+	2- if data already exists in db*/
 	@Transient
-	@JsonInclude
-	private String location;
+	@JsonIgnore
+	private int state;
 
 
 	
@@ -105,6 +118,7 @@ public class CategoryDetails {
 	}
 
 
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -115,6 +129,7 @@ public class CategoryDetails {
 	}
 
 
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getModifiedOn() {
 		return modifiedOn;
 	}
@@ -154,6 +169,21 @@ public class CategoryDetails {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+
+
+
+
+	public int getState() {
+		return state;
+	}
+
+
+
+
+	public void setState(int state) {
+		this.state = state;
+	}
+	
 	
 	
 

@@ -1,6 +1,7 @@
 package rock.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,11 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import rock.bean.CategoryDetailsBean;
 import rock.db.model.CategoryDetails;
 import rock.error.Error;
+import rock.response.CategoryDetailsResponse;
 import rock.service.CategoryDetailsService;
 
 @RestController
@@ -31,59 +35,122 @@ private CategoryDetailsService categoryDetailsService;
 	
 	
 	@RequestMapping(value="/add",method=RequestMethod.POST,consumes="application/json")
-	public ResponseEntity<?> addBookCategory(@RequestBody CategoryDetails categoryDetails,UriComponentsBuilder ucb)
+	public ResponseEntity<?> addCategory(@RequestBody CategoryDetails categoryDetails,UriComponentsBuilder ucb)
 	{
-		/*if(bookCategory.getRank()==0)
+		if(categoryDetails.getRank()==0)
 		{
 			Error error = new Error(400,"rank can not be null");
 			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
 		}
 		
-		if(bookCategory.getBookCategory()==null)
+		if(categoryDetails.getCategory()==null)
 		{
-			Error error = new Error(400,"book category can not be null");
+			Error error = new Error(400,"category can not be null");
 			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
 		}
-		*/
+		
+		if(categoryDetails.getProdTypeDetails()==null)
+		{
+			Error error = new Error(400,"product type can not be null");
+			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
+		}
+		
 	
-		System.out.println("rank is: " + categoryDetails.getRank());
+		CategoryDetails catDetails = categoryDetailsService.add(categoryDetails);
 		
-		//System.out.println("id is " + categoryDetails.getProdTypeDetails().getProdTypeId());
-		CategoryDetails cd = categoryDetailsService.add(categoryDetails);
+		if(catDetails == null)
+		{
+			Error error = new Error(500,"Something went wrong, try again");
+			return new ResponseEntity<Error>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
-		if(cd!=null)
+		CategoryDetailsResponse response = new CategoryDetailsResponse();
+		
+		
+		
+		if(catDetails.getState()==1)
+		{
+			response.setSuccess(false);
+			response.setMessage("Product id is not valid.");
+			return new ResponseEntity<CategoryDetailsResponse>(response,HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+		else if(catDetails.getState()==2)
+		{
+			response.setSuccess(false);
+			response.setMessage("product id with given category already exists");
+			return new ResponseEntity<CategoryDetailsResponse>(response,HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		
+		else
 		{
 			URI locationUri = ucb.path("/categorydetails/")
-								 .path(String.valueOf(cd.getId()))
+								 .path(String.valueOf(catDetails.getId()))
 								 .build()
 								 .toUri();
 			String location = locationUri.toString();
 			
-			cd.setLocation(location);
+			catDetails.setLocation(location);
+			response.setCategoryDetails(catDetails);
+			response.setSuccess(true);
+			response.setMessage("Data successfully inserted");
 			
-			return new ResponseEntity<CategoryDetails>(cd,HttpStatus.OK);
+			return new ResponseEntity<CategoryDetailsResponse>(response,HttpStatus.OK);
 						
 		}
 		
-		Error error = new Error(500,"Category already exists, enter different one");
-		return new ResponseEntity<Error>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+		
+		
+			
+			
+		
+		
 	}
 	
 	@RequestMapping(value="/{categoryDetailsId}",method=RequestMethod.GET,produces="application/json")
-	public ResponseEntity<?> viewProductType(@PathVariable int categoryDetailsId)
+	public ResponseEntity<?> viewCategoryById(@PathVariable int categoryDetailsId)
 	{
-		System.out.println("Inside controller");
+		
 		CategoryDetails cd = categoryDetailsService.listCategoryDetails(categoryDetailsId);
 		System.out.println("after getting cd");
 		if(cd == null)
 		{
-			System.out.println("inside");
-			Error error = new Error(204,"product type with id "+categoryDetailsId+" not found");
-			return new ResponseEntity<Error>(error,HttpStatus.NO_CONTENT);
+			
+			Error error = new Error(204,"category with id "+categoryDetailsId+" not found");
+			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
 		}
 		
 		return new ResponseEntity<CategoryDetails>(cd,HttpStatus.OK);
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/allcategories",method=RequestMethod.GET,produces="application/json")
+	public List<CategoryDetailsBean> viewCategoryAndProductTypeId()
+	{
+		List<CategoryDetailsBean> cd = categoryDetailsService.viewCategoryAndProdTypeId();
+		
+		return cd;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/distinctcategories",method=RequestMethod.GET,produces="application/json")
+	public List<String> viewDistinctCategories()
+	{
+		List<String> cd = categoryDetailsService.viewDistinctCategories();
+		
+		return cd;
+	}
 
+	
+	@ResponseBody
+	@RequestMapping(value="/categoryandprodtype",method=RequestMethod.GET,produces="application/json")
+	public List<CategoryDetails> joinCategoryAndProductType()
+	{
+		List<CategoryDetails> cd = categoryDetailsService.joinCategoryAndProductType();
+		
+		return cd;
+	}
 
 }
