@@ -3,7 +3,6 @@ package rock.service;
 import java.util.List;
 
 import rock.bean.CategoryDistinctBean;
-import rock.bean.CategoryProdTypeBean;
 import rock.bean.CategoryProdTypeIdBean;
 import rock.db.model.CategoryDetails;
 
@@ -28,6 +27,6 @@ public interface CategoryDetailsService {
 		public List<CategoryDistinctBean> viewDistinctCategories();
 		
 		//view category and product type name
-		public List<CategoryProdTypeBean> joinCategoryAndProductType();
+		public List joinCategoryAndProductType();
 
 }

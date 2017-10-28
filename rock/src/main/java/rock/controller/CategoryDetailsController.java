@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import rock.bean.CategoryDistinctBean;
-import rock.bean.CategoryProdTypeBean;
 import rock.bean.CategoryProdTypeIdBean;
 import rock.db.model.CategoryDetails;
 import rock.error.Error;
@@ -205,10 +204,10 @@ private Logger logger;
 	
 	@ResponseBody
 	@RequestMapping(value="/categoryandprodtype",method=RequestMethod.GET,produces="application/json")
-	public List<CategoryProdTypeBean> joinCategoryAndProductType()
+	public List joinCategoryAndProductType()
 	{
 		
-		List<CategoryProdTypeBean> cd = categoryDetailsService.joinCategoryAndProductType();
+		List cd = categoryDetailsService.joinCategoryAndProductType();
 		
 		return cd;
 	}

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import rock.bean.CategoryDistinctBean;
-import rock.bean.CategoryProdTypeBean;
 import rock.bean.CategoryProdTypeIdBean;
 import rock.dao.CategoryDetailsDao;
 import rock.db.model.CategoryDetails;
@@ -192,7 +191,7 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 
 
 	@Override
-	public List<CategoryProdTypeBean> joinCategoryAndProductType() {
+	public List joinCategoryAndProductType() {
 
 		
 		Criteria criteria = getSession().createCriteria(CategoryDetails.class,"cd")
@@ -209,7 +208,7 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 		
 		
 		
-		List<CategoryProdTypeBean> cd = criteria.list();
+		List cd = criteria.list();
 		
 		
 		

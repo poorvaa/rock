@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
+<Properties>
+    <Property name="filename">E:/logs</Property>
+</Properties>
+
 <Appenders>
-<Console name="CONSOLE" target="SYSTEM_OUT">
-    <PatternLayout
-        pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
-</Console>
+	<Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+        
+    <File name="MyFile" fileName="${filename}/debug.log">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </File>
+    
+    <RollingFile name="RollingFile" fileName="${filename}/app.log"
+                 filePattern="${filename}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">              
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>  
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="8 KB"/>
+      </Policies>   
+    </RollingFile>
+    
+    
 </Appenders>
+
 <Loggers>
-<Root level="info">
-    <AppenderRef ref="CONSOLE" />
-</Root>
-<logger level="info" additivity="false" name="org.springframework.security">
-    <AppenderRef ref="CONSOLE" />
-</logger>
-<logger level="info" additivity="false" name="org.springframework.web">
-    <AppenderRef ref="CONSOLE" />
-</logger>
-<logger level="warn" additivity="false" name="rock.controller">
-    <AppenderRef ref="CONSOLE" />
-</logger>
+	<Root level="info">
+	    <AppenderRef ref="RollingFile" />
+	</Root>
+	
+	<logger level="info" additivity="false" name="org.springframework.security">
+	    <AppenderRef ref="MyFile" />
+	</logger>
+	
+	<logger level="info" additivity="false" name="org.springframework.web">
+	    <AppenderRef ref="RollingFile" />
+	</logger>
+	
+	<logger level="warn" additivity="false" name="rock.controller">
+	    <AppenderRef ref="MyFile" />
+	</logger>
 </Loggers>
+
 </Configuration>

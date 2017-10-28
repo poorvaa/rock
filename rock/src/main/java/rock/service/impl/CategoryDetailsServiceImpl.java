@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import rock.bean.CategoryDistinctBean;
-import rock.bean.CategoryProdTypeBean;
 import rock.bean.CategoryProdTypeIdBean;
 import rock.dao.CategoryDetailsDao;
 import rock.db.model.CategoryDetails;
@@ -75,7 +74,7 @@ public class CategoryDetailsServiceImpl implements CategoryDetailsService {
 
 	@Transactional
 	@Override
-	public List<CategoryProdTypeBean> joinCategoryAndProductType() {
+	public List joinCategoryAndProductType() {
 		
 		return cdDao.joinCategoryAndProductType();
 	}
