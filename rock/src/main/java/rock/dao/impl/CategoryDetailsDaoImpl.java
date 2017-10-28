@@ -152,6 +152,12 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 		
 		List<CategoryDetails> cd = criteria.list();
 		
+		ProductType pt =(ProductType) getSession().get(ProductType.class, 3);
+		
+		pt.setProdTypeName("tv");
+		System.out.println("deleting");
+		getSession().delete(pt);
+		
 		
 		return cd;
 	}

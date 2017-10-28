@@ -3,6 +3,8 @@ package rock.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ import rock.service.CategoryDetailsService;
 public class CategoryDetailsController {
 	
 private CategoryDetailsService categoryDetailsService;
+private Logger logger;
 	
 	
 	@Autowired
@@ -111,6 +114,10 @@ private CategoryDetailsService categoryDetailsService;
 	@RequestMapping(value="/{categoryDetailsId}",method=RequestMethod.GET,produces="application/json")
 	public ResponseEntity<?> viewCategoryById(@PathVariable int categoryDetailsId)
 	{
+		logger =LoggerFactory.getLogger(CategoryDetails.class);
+		logger.debug("This is a debug message");
+		logger.info("This is an info message");
+		logger.warn("This is an warn message");
 		
 		CategoryDetails cd = categoryDetailsService.listCategoryDetails(categoryDetailsId);
 		System.out.println("after getting cd");
@@ -148,9 +155,18 @@ private CategoryDetailsService categoryDetailsService;
 	@RequestMapping(value="/categoryandprodtype",method=RequestMethod.GET,produces="application/json")
 	public List<CategoryDetails> joinCategoryAndProductType()
 	{
+		
 		List<CategoryDetails> cd = categoryDetailsService.joinCategoryAndProductType();
 		
 		return cd;
 	}
+	
+	/*@ResponseBody
+	@RequestMapping(value="/categoryandprodtype",method=RequestMethod.GET,produces="application/json")
+	public void deleteCategory()
+	{
+		categoryDetailsService.deleteCategory();
+	}*/
+	
 
 }

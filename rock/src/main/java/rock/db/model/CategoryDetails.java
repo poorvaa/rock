@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import rock.JsonDateSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -49,8 +52,10 @@ public class CategoryDetails {
 	private String location;
 	
 	
+	//@ManyToOne(cascade=CascadeType.REMOVE)
 	@ManyToOne
 	@JoinColumn(name="prod_type_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ProductType prodTypeDetails;
 	
 	
