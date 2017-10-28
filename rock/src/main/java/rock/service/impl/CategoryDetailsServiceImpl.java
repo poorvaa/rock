@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import rock.bean.CategoryDetailsBean;
+import rock.bean.CategoryDistinctBean;
+import rock.bean.CategoryProdTypeBean;
+import rock.bean.CategoryProdTypeIdBean;
 import rock.dao.CategoryDetailsDao;
 import rock.db.model.CategoryDetails;
 import rock.service.CategoryDetailsService;
@@ -37,27 +39,50 @@ public class CategoryDetailsServiceImpl implements CategoryDetailsService {
 		
 		return cdDao.listCategoryDetails(id);
 	}
+	
+	
+	@Transactional
+	@Override
+	public CategoryDetails updateCategoryDetails(int id,
+			CategoryDetails categoryDetails) {
+
+
+		return cdDao.updateCategoryDetails(id, categoryDetails);
+		
+	}
 
 	@Transactional
 	@Override
-	public List<CategoryDetailsBean> viewCategoryAndProdTypeId() {
+	public int deleteCategoryDetails(int categoryDetailsId) {
+		
+		 return cdDao.deleteCategoryDetails(categoryDetailsId);
+		
+	}
+	
+	@Transactional
+	@Override
+	public List<CategoryProdTypeIdBean> viewCategoryAndProdTypeId() {
 		
 		return cdDao.viewCategoryAndProdTypeId();
 	}
 
 	@Transactional
 	@Override
-	public List<String> viewDistinctCategories() {
+	public List<CategoryDistinctBean> viewDistinctCategories() {
 		
 		return cdDao.viewDistinctCategories();
 	}
 
 	@Transactional
 	@Override
-	public List<CategoryDetails> joinCategoryAndProductType() {
+	public List<CategoryProdTypeBean> joinCategoryAndProductType() {
 		
 		return cdDao.joinCategoryAndProductType();
 	}
+
+	
+
+	
 	
 	
 

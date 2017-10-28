@@ -1,5 +1,6 @@
 package rock.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -12,7 +13,9 @@ import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import rock.bean.CategoryDetailsBean;
+import rock.bean.CategoryDistinctBean;
+import rock.bean.CategoryProdTypeBean;
+import rock.bean.CategoryProdTypeIdBean;
 import rock.dao.CategoryDetailsDao;
 import rock.db.model.CategoryDetails;
 import rock.db.model.ProductType;
@@ -96,10 +99,56 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 		return null;
 
 	}
+	
+	
+	
+	
+	@Override
+	public CategoryDetails updateCategoryDetails(int id,
+			CategoryDetails categoryDetails) {
+		
+		CategoryDetails updatedCategoryDetails = (CategoryDetails)getSession().get(CategoryDetails.class, id);
+		
+		//check if id is invalid
+		if(updatedCategoryDetails==null)
+		{
+			categoryDetails.setState(0);
+			return categoryDetails;
+		}
+		
+		if(categoryDetails.getRank()!=0)
+		{
+			updatedCategoryDetails.setRank(categoryDetails.getRank());
+		}
+		updatedCategoryDetails.setModifiedOn(new Date());
+		updatedCategoryDetails.setState(1);
+		
+		return updatedCategoryDetails ;
+	}
+
+	
+	@Override
+	public int deleteCategoryDetails(int categoryDetailsId) {
+		
+		CategoryDetails cd =(CategoryDetails) getSession().get(CategoryDetails.class, categoryDetailsId);
+		
+		if(cd==null)
+		{
+			return 0;
+		}
+		
+		else
+		{
+			cd.setIsActive(false);
+			cd.setModifiedOn(new Date());
+			return 1;
+		}
+		
+	}
 
 
 	@Override
-	public List<CategoryDetailsBean> viewCategoryAndProdTypeId() {
+	public List<CategoryProdTypeIdBean> viewCategoryAndProdTypeId() {
 		
 		Criteria criteria = getSession().createCriteria(CategoryDetails.class);
 		
@@ -108,21 +157,33 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 		properties.add(Projections.property("prodTypeDetails.prodTypeId"), "prodId");
 		
 		criteria.setProjection(properties);
-		criteria.setResultTransformer(Transformers.aliasToBean(CategoryDetailsBean.class));
+		criteria.setResultTransformer(Transformers.aliasToBean(CategoryProdTypeIdBean.class));
 		
 		
 		
-		List<CategoryDetailsBean> cd =  criteria.list();
+		List<CategoryProdTypeIdBean> cd =  criteria.list();
 		
 		return cd;
 	}
 
 
 	@Override
-	public List<String> viewDistinctCategories() {
+	public List<CategoryDistinctBean> viewDistinctCategories() {
 		
-		Criteria criteria = getSession().createCriteria(CategoryDetails.class)
+		/*Criteria criteria = getSession().createCriteria(CategoryDetails.class)
 										.setProjection(Projections.distinct(Projections.property("category")));
+		*/
+		Criteria criteria = getSession().createCriteria(CategoryDetails.class)
+										.setProjection(
+										Projections.distinct(
+										Projections.projectionList()
+										.add(Projections.property("category"), "categoryName") ));
+			 
+
+
+		
+		
+		criteria.setResultTransformer(Transformers.aliasToBean(CategoryDistinctBean.class));
 
 		List categories = criteria.list();
 		
@@ -131,7 +192,7 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 
 
 	@Override
-	public List<CategoryDetails> joinCategoryAndProductType() {
+	public List<CategoryProdTypeBean> joinCategoryAndProductType() {
 
 		
 		Criteria criteria = getSession().createCriteria(CategoryDetails.class,"cd")
@@ -144,22 +205,20 @@ public class CategoryDetailsDaoImpl implements CategoryDetailsDao {
 		
 		
 		criteria.setProjection(properties);
-		/*Criteria criteria = getSession().createCriteria(CategoryDetails.class);
-		criteria.setFetchMode("ProductType", FetchMode.JOIN);
-		//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		*/
+		criteria.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		
 		
-		List<CategoryDetails> cd = criteria.list();
 		
-		ProductType pt =(ProductType) getSession().get(ProductType.class, 3);
+		List<CategoryProdTypeBean> cd = criteria.list();
 		
-		pt.setProdTypeName("tv");
-		System.out.println("deleting");
-		getSession().delete(pt);
 		
 		
 		return cd;
 	}
+
+
+	
+
+	
 
 }

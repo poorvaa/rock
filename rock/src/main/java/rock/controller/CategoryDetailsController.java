@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import rock.bean.CategoryDetailsBean;
+import rock.bean.CategoryDistinctBean;
+import rock.bean.CategoryProdTypeBean;
+import rock.bean.CategoryProdTypeIdBean;
 import rock.db.model.CategoryDetails;
 import rock.error.Error;
 import rock.response.CategoryDetailsResponse;
@@ -103,14 +105,10 @@ private Logger logger;
 						
 		}
 		
-		
-		
-			
-			
-		
-		
 	}
 	
+	
+	//view category by id
 	@RequestMapping(value="/{categoryDetailsId}",method=RequestMethod.GET,produces="application/json")
 	public ResponseEntity<?> viewCategoryById(@PathVariable int categoryDetailsId)
 	{
@@ -132,20 +130,74 @@ private Logger logger;
 	}
 	
 	
+	//update category detail
+	@RequestMapping(value="/{categoryDetailsId}",method=RequestMethod.PUT,produces="application/json",consumes="application/json")
 	@ResponseBody
-	@RequestMapping(value="/allcategories",method=RequestMethod.GET,produces="application/json")
-	public List<CategoryDetailsBean> viewCategoryAndProductTypeId()
+	public ResponseEntity<?> updateCategoryDetails(@PathVariable int categoryDetailsId, @RequestBody CategoryDetails cd)
 	{
-		List<CategoryDetailsBean> cd = categoryDetailsService.viewCategoryAndProdTypeId();
+		/*if(cd.getId()==0)
+		{
+			Error error = new Error(400,"id can not be 0");
+			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
+		}*/
+		
+		if(cd.getCategory()!=null)
+		{
+			Error error = new Error(400,"category name can not be modified");
+			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
+		}
+		
+		if(cd.getProdTypeDetails()!=null)
+		{
+			Error error = new Error(400,"prod id cant be modified");
+			return new ResponseEntity<Error>(error,HttpStatus.BAD_REQUEST);
+		}
+		
+		
+		CategoryDetails updatedCategory = categoryDetailsService.updateCategoryDetails(categoryDetailsId,cd);
+		
+		if(updatedCategory.getState()==0)
+		{
+			Error error = new Error(404,"no category with id "+categoryDetailsId);
+			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+		}
+		
+		
+		
+		return new ResponseEntity<CategoryDetails>(updatedCategory,HttpStatus.OK);
+	}
+	
+	
+	//to remove category details
+	@RequestMapping(value="/remove/{categoryDetailsId}",method=RequestMethod.GET)
+	public ResponseEntity<?> removeCategory(@PathVariable int categoryDetailsId)
+	{
+		int status = categoryDetailsService.deleteCategoryDetails(categoryDetailsId);
+		
+		if(status== 0)
+		{
+			Error error = new Error(404,"no category with  id "+categoryDetailsId);
+			return new ResponseEntity<Error>(error,HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<String>("Done",HttpStatus.OK);
+	}
+	
+	// to view category and its product type id
+	@ResponseBody
+	@RequestMapping(value="/categoryandprodtypeid",method=RequestMethod.GET,produces="application/json")
+	public List<CategoryProdTypeIdBean> viewCategoryAndProductTypeId()
+	{
+		List<CategoryProdTypeIdBean> cd = categoryDetailsService.viewCategoryAndProdTypeId();
 		
 		return cd;
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/distinctcategories",method=RequestMethod.GET,produces="application/json")
-	public List<String> viewDistinctCategories()
+	public List<CategoryDistinctBean> viewDistinctCategories()
 	{
-		List<String> cd = categoryDetailsService.viewDistinctCategories();
+		List<CategoryDistinctBean> cd = categoryDetailsService.viewDistinctCategories();
 		
 		return cd;
 	}
@@ -153,10 +205,10 @@ private Logger logger;
 	
 	@ResponseBody
 	@RequestMapping(value="/categoryandprodtype",method=RequestMethod.GET,produces="application/json")
-	public List<CategoryDetails> joinCategoryAndProductType()
+	public List<CategoryProdTypeBean> joinCategoryAndProductType()
 	{
 		
-		List<CategoryDetails> cd = categoryDetailsService.joinCategoryAndProductType();
+		List<CategoryProdTypeBean> cd = categoryDetailsService.joinCategoryAndProductType();
 		
 		return cd;
 	}

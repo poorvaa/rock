@@ -3,21 +3,21 @@ package rock.bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CategoryDetailsBean {
+public class CategoryProdTypeIdBean {
 	
 	private String category;
 	private int prodId;
-	private int xyz;
 	
 	
 	
 	
-	public CategoryDetailsBean() {
+	
+	public CategoryProdTypeIdBean() {
 		
 	}
 
 
-	public CategoryDetailsBean(String category, int prodId) {
+	public CategoryProdTypeIdBean(String category, int prodId) {
 		
 		this.category = category;
 		this.prodId = prodId;
@@ -44,15 +44,6 @@ public class CategoryDetailsBean {
 	}
 
 
-	public int getXyz() {
-		return xyz;
-	}
-
-
-	public void setXyz(int xyz) {
-		this.xyz = xyz;
-	}
-	
 	
 	
 	
