@@ -73,6 +73,8 @@ public class CategoryDetails {
 	
 	public CategoryDetails() {
 		
+		System.out.println("inside constructor");
+		
 	}
 	
 	

@@ -134,6 +134,7 @@ private Logger logger;
 	@ResponseBody
 	public ResponseEntity<?> updateCategoryDetails(@PathVariable int categoryDetailsId, @RequestBody CategoryDetails cd)
 	{
+		System.out.println("inside controller");
 		/*if(cd.getId()==0)
 		{
 			Error error = new Error(400,"id can not be 0");

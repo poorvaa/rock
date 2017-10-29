@@ -6,6 +6,8 @@
 <session-factory>
 <mapping class = "rock.db.model.ProductType"/>
 <mapping class = "rock.db.model.CategoryDetails"/>
+<mapping class = "rock.db.model.Book"/>
+<mapping class = "rock.db.model.BookCategory"/>
 </session-factory>
 </hibernate-configuration>
 
