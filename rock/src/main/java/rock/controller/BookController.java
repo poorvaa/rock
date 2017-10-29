@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -131,11 +132,12 @@ public class BookController {
 		}
 		
 		
-		//view book by id
+		//view all books
 		@RequestMapping(method=RequestMethod.GET,produces="application/json")
-		public ResponseEntity<?> viewAllBooks()
+		public ResponseEntity<?> viewAllBooks(@RequestParam("start")int start,
+											  @RequestParam("count") int count)
 		{		
-			 List  books = bookService.viewAllBooks();
+			 List  books = bookService.viewAllBooks(start,count);
 					
 			if(books.size()>0)
 			{
@@ -185,7 +187,7 @@ public class BookController {
 			
 			
 			
-			return new ResponseEntity<Book>(updatedBook,HttpStatus.OK);
+			return new ResponseEntity<Book>( updatedBook,HttpStatus.OK);
 		}
 		
 		

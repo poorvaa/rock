@@ -13,7 +13,7 @@ public interface BookService {
 			public Book viewBookById(int id);
 			
 			//view all books
-			public List viewAllBooks();
+			public List viewAllBooks(int start,int count);
 			
 			//update book
 			public Book updateBookDetails(int id,Book book);

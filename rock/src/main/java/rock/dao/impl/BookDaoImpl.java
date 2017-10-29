@@ -80,10 +80,12 @@ public class BookDaoImpl implements BookDao {
 	}
 
 	@Override
-	public List viewAllBooks() {
+	public List viewAllBooks(int start,int count) {
 	
 		List books = getSession().createCriteria(Book.class)
 								 .add(Restrictions.eq("isActive", true))
+								 .setFirstResult(start)
+								 .setMaxResults(count)
 								 .addOrder(Order.asc("rank"))
 								 .addOrder(Order.desc("modifiedOn"))
 								 .list();

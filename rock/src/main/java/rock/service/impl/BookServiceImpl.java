@@ -37,9 +37,9 @@ public class BookServiceImpl implements BookService {
 
 	@Transactional
 	@Override
-	public List viewAllBooks() {
+	public List viewAllBooks(int start,int count) {
 		
-		return bookDao.viewAllBooks();
+		return bookDao.viewAllBooks(start,count);
 	}
 
 	@Transactional
