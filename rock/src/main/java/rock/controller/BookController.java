@@ -207,5 +207,19 @@ public class BookController {
 			return new ResponseEntity<String>("Done",HttpStatus.OK);
 		}
 		
-	
+		
+		//aggregate functions
+		@RequestMapping(value="/aggregate",method=RequestMethod.GET,produces="application/json")
+		@ResponseBody
+		public String aggregateFunctions()
+		{		
+			  bookService.aggregateFunctions();
+			  
+			  return "Done";
+					
+			
+					
+		}	
+
+
 }

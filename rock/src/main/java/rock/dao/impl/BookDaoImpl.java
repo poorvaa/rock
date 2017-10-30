@@ -1,12 +1,15 @@
 package rock.dao.impl;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -146,6 +149,85 @@ public class BookDaoImpl implements BookDao {
 			book.setIsActive(false);
 			return 1;
 		}
+	}
+
+	@Override
+	public void aggregateFunctions() {
+	
+		//count no of records in table
+		Long countRecords = (Long) getSession().createCriteria(Book.class)
+													  .setProjection(Projections.rowCount())
+													  .list().get(0);
+		
+		System.out.println("count of records is "+countRecords);
+		
+		//count no of records with restrictions
+		Long countRestrictedRecords = (Long) getSession().createCriteria(Book.class)
+															   .add(Restrictions.eq("categoryDetails.id",21))
+															   .setProjection(Projections.count("name"))
+															   .list().get(0);
+		
+		System.out.println("count of restricted records is "+countRestrictedRecords);
+		
+		//select max and min values
+		Criteria criteria1 =  getSession().createCriteria(Book.class)
+												 .add(Restrictions.eq("productTypeDetails.prodTypeId", 1));
+		
+		ProjectionList properties1 = Projections.projectionList();
+		properties1.add(Projections.max("id"));
+		properties1.add(Projections.min("id"));
+		
+		criteria1.setProjection(properties1);
+		
+		Object[] minMax = (Object[]) criteria1.list().get(0);
+		
+		System.out.println("max id is "+minMax[0]+" and min id is "+minMax[1]);
+		
+		
+		//select avg and sum of values
+		Criteria criteria2 =  getSession().createCriteria(Book.class)
+				 						  .add(Restrictions.gt("price", new Float(99.0)));
+
+		ProjectionList properties2 = Projections.projectionList();
+		properties2.add(Projections.avg("price"));
+		properties2.add(Projections.sum("price"));
+		
+		criteria2.setProjection(properties2);
+		
+		Object[] avgSum = (Object[]) criteria2.list().get(0);
+		
+		System.out.println("avg price is "+avgSum[0]+" and sum of price is "+avgSum[1]);	
+		
+		
+		//groupby
+				
+		Criteria criteria3 =  getSession().createCriteria(Book.class);
+				  
+
+		ProjectionList properties3 = Projections.projectionList();
+		properties3.add(Projections.groupProperty("categoryDetails.id"));
+		properties3.add(Projections.sum("price"));
+		properties3.add(Projections.rowCount());
+		
+		criteria3.setProjection(properties3);
+		
+		List  groupBy= (List) criteria3.list();
+		
+		Iterator it = groupBy.iterator();
+		
+		while(it.hasNext())
+		{
+			Object grpBy[] = (Object[])it.next();
+			System.out.println("category id is "+grpBy[0]+" sum of price is "+grpBy[1]+" and row count is "+grpBy[2]);
+		}
+
+
+		
+			
+
+		
+		
+												 
 	}
 
 	

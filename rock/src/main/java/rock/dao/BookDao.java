@@ -21,5 +21,7 @@ public interface BookDao {
 		
 		//to delete book
 		public int deleteBook(int id);
+		
+		public void aggregateFunctions();
 
 }

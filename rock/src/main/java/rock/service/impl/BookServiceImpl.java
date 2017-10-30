@@ -56,4 +56,12 @@ public class BookServiceImpl implements BookService {
 		return bookDao.deleteBook(id);
 	}
 
+	@Transactional
+	@Override
+	public void aggregateFunctions() {
+		
+		bookDao.aggregateFunctions();
+		
+	}
+
 }
